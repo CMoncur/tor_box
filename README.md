@@ -90,3 +90,47 @@ Instead of reinventing the wheel here, I'm going to redirect you to an easy-to-f
 Visit the tutorial [HERE](https://learn.adafruit.com/setting-up-a-raspberry-pi-as-a-wifi-access-point/).
 
 ### Installing and Configuring Tor
+Okay, from this point on, we'll need to be running all commands as root.  You're the boss, and you want your Raspberry Pi to know it!  Simply type in:
+```
+pi@raspberrypi ~ $ sudo -i
+```
+Now all the commands you type will be as a root user.  Your prompt should now look something like this:
+```
+root@raspberrypi:~#
+```
+Now, you can do all the typing to configure the IP tables and install Tor on your own, or you can simply run the shell script I created.  It couldn't be easier to run.  The script can be found in this repository [here](https://github.com/CMoncur/tor_box/blob/master/installtor.sh), titled ```installtor.sh```.  To run the script, all you need to do is type in the following command:
+```
+root@raspberrypi:~# curl -fsSL https://raw.githubusercontent.com/CMoncur/tor_box/master/installtor.sh | sudo sh
+```
+Allow Tor to install entirely.  Now, there's one more thing to do before we call it a day.  We have to install Tor. Open up a Nano editor of the Tor configuration file by typing:
+```
+root@raspberrypi:~# nano /etc/tor/torrc
+```
+Append the following settings to the bottom of the file:
+```
+Log notice file /var/log/tor/notices.log
+VirtualAddrNetwork 10.192.0.0/10
+AutomapHostsSuffixes .onion,.exit
+AutomapHostsOnResolve 1
+TransPort 9040
+TransListenAddress 192.168.42.1
+DNSPort 53
+DNSListenAddress 192.168.42.1
+```
+Hit ```Ctrl-X``` to exit Nano, and hit ```yes``` to save and write out the changes to the file. Now, let's restart the Tor service by typing:
+```
+root@raspberrypi:~# service tor restart
+```
+You should see the following notifications:
+```
+[ ok ] Stopping tor daemon...done.
+[ ok ] Starting tor daemon...done.
+```
+Tor is now configured!
+
+### Wrapping it all up
+You should now have a fully functioning wireless Tor access point!  Congratulations!  Try connecting to it from your desktop or laptop. The wireless network should be named whatever name you gave it while setting up your wireless access point.  Mine is named tor_box.
+
+Once connected, the VERY FIRST thing you need to do is visit ```https://check.torproject.org/``` to ensure your Tor access point is up and running correctly.  You should see a congratulations message, followed by your IP alias.
+
+I now give you permission to browse the web anonymously. Proceed.
