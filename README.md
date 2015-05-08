@@ -38,4 +38,48 @@ When the options on the screen appear, use your arrow keys to navigate to "Advan
 
 Before exiting ```raspi-config``` be sure to change the timezone, display, and other miscellaneous settings to your choosing if you so desire.  This is optional, however.  When you're done, hit the ```esc``` key to exit configuration and go back to the command line.
 
+You'll need to make note of your Pi's IP address.  You can find it by typing the following command:
+```
+pi@raspberrypi ~ $ ifconfig
+```
+The IP will be listed under ```eth0```.  Now, run a shutdown command to your Pi by typing the following:
+```
+pi@raspberrypi ~ $ sudo shutdown -h now
+```
+After the shutdown sequence has completed, unplug the keyboard, mouse, monitor, and power from the Raspberry Pi.  Leave the ethernet connected. We'll need that.  Once you've connected all of your hardware back up to your personal computer, plug the power source back in to the Pi.
+
 ###Setting up SSH and the Avahi Daemon
+Dealing with hardware is a hassle, and we want a way to communicate with our Raspberry Pi without having to use the hardware from our personal computer.  Ideally, we could just send commands from our personal computer.  Let's set that up!
+
+If you're a Linux or Mac OS X user, you're in luck, because you can simply use the SSH command! If you're a Windows user, go ahead and download the PuTTY client.  It's free and lightweight!
+
+#####For OS X and Linux users
+Open up a shell terminal, and type in the following command:
+```
+~ $ ssh pi@1.2.3.4
+```
+Replace ```1.2.3.4``` with the IP address of your Raspberry Pi.  You should be prompted for the password, and after typing it in, you're ready to communicate with your Pi from your personal computer!
+
+#####For Windows users
+Once you have PuTTY downloaded, open it up.  Under the ```Host Name (IP address)``` field, put the IP address of your Pi.  Leave the port as 22, and hit ```Open```. You'll be prompted for both a username and password.  Log in using ```pi``` and ```raspberry```.  You're now ready to send commands to your Pi as well!
+
+#####The Avahi Daemon
+The Avahi Daemon is a way to connect to your Raspberry Pi via SSH without even having to know the IP address of the Pi.  This makes connecting via SSH far more convenient. Installing the daemon is easy.  Use the following command to install the daemon:
+```
+pi@raspberrypi ~ $ sudo apt-get install avahi-daemon
+```
+It should download and install in a matter of seconds. Next, well run the following command to ensure the daemon is running when the Raspberry Pi starts up:
+```
+pi@raspberrypi ~ $ sudo update-rc.d avahi-daemon defaults
+```
+We can now ensure the daemon has started by running:
+```
+pi@raspberrypi ~ $ sudo /etc/init.d/avahi-daemon restart
+```
+Easy.  Now instead of using the Pi's IP address (which may or may not remain consistent) to connect via SSH, the Raspberry Pi can be addressed by ```raspberrypi.local```, regardless of the IP.
+
+So, if you're using OS X or Linux, you can simply connect by typing:
+```
+pi@raspberrypi ~ $ ssh pi@raspberrypi.local
+```
+And if you're on Windows, simply type ```raspberrypi.local``` into the ```Host Name``` field, then click ```Open```.
