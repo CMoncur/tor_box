@@ -48,7 +48,7 @@ pi@raspberrypi ~ $ sudo shutdown -h now
 ```
 After the shutdown sequence has completed, unplug the keyboard, mouse, monitor, and power from the Raspberry Pi.  Leave the ethernet connected. We'll need that.  Once you've connected all of your hardware back up to your personal computer, plug the power source back in to the Pi.
 
-###Setting up SSH and the Avahi Daemon
+### Setting up SSH and the Avahi Daemon
 Dealing with hardware is a hassle, and we want a way to communicate with our Raspberry Pi without having to use the hardware from our personal computer.  Ideally, we could just send commands from our personal computer.  Let's set that up!
 
 If you're a Linux or Mac OS X user, you're in luck, because you can simply use the SSH command! If you're a Windows user, go ahead and download the PuTTY client.  It's free and lightweight!
@@ -82,4 +82,11 @@ So, if you're using OS X or Linux, you can simply connect by typing:
 ```
 pi@raspberrypi ~ $ ssh pi@raspberrypi.local
 ```
-And if you're on Windows, simply type ```raspberrypi.local``` into the ```Host Name``` field, then click ```Open```.
+And if you're on Windows, simply type ```raspberrypi.local``` into the ```Host Name``` field, then click ```Open```. You're now in command of your Raspberry Pi no matter what IP address it attempts to hide behind!
+
+### Setting up the Raspberry Pi as a Wireless Access Point
+Instead of reinventing the wheel here, I'm going to redirect you to an easy-to-follow and well-written tutorial written by LadyAda at Adafruit for this step.  Return here when you're done, though! We're getting to the good part.
+
+Visit the tutorial [HERE](https://learn.adafruit.com/setting-up-a-raspberry-pi-as-a-wifi-access-point/).
+
+### Installing and Configuring Tor
