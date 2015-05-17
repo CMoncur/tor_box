@@ -22,7 +22,7 @@
 /bin/chown debian-tor /var/log/tor/notices.log
 /bin/chmod 644 /var/log/tor/notices.log
 
-/bin/echo "Configuring Tor for Wifi access point:"
+/bin/echo "Configuring Tor for Wifi access point and relay:"
 /bin/cat >/etc/tor/torrc <<tor_config 
 ## Wifi Access Point Configuration
 ## Assumes you've configured your access point similar to LadyAda's "Pi as Access Point" tutorial
@@ -41,6 +41,31 @@ TransListenAddress 192.168.42.1
 # DNS Port
 DNSPort 53
 DNSListenAddress 192.168.42.1
+
+## Tor Relay Configuration
+
+# SOCKS Port
+SocksPort 0
+
+# Run Tor as Daemon (0 for no, 1 for yes)
+RunAsDaemon 1
+
+# OR Port (Ensure you have this forwarded to your Pi)
+ORPort 9001
+
+# Dir Port (Ensure you have this forwarded to your Pi)
+DirPort 9030
+
+# Exit Policy (Default to reject all)
+# Only change if you understand the responsibilities of running an exit node
+ExitPolicy reject *:*
+
+# Nickname (You can search for this nickname on Atlas or Globe)
+Nickname torpi
+
+# Bandwidth (Will allot this amount of bandwidth to your relay)
+RelayBandwidthRate 300 KB
+RelayBandwidthBurst 600 KB
 tor_config
 
 /bin/echo "Ensuring Tor starts when system boots up:"
