@@ -22,32 +22,11 @@
 /bin/chown debian-tor /var/log/tor/notices.log
 /bin/chmod 644 /var/log/tor/notices.log
 
-/bin/echo "Configuring Tor for Wifi access point:"
-/bin/cat >/etc/tor/torrc <<tor_config 
-## Wifi Access Point Configuration
-## Assumes you've configured your access point similar to LadyAda's "Pi as Access Point" tutorial
-
-# Log File
-Log notice file /var/log/tor/notices.log
-
-VirtualAddrNetwork 10.192.0.0/10
-AutomapHostsSuffixes .onion,.exit
-AutomapHostsOnResolve 1
-
-# Transparent Port
-TransPort 9040
-TransListenAddress 192.168.42.1
-
-# DNS Port
-DNSPort 53
-DNSListenAddress 192.168.42.1
-tor_config
-
 /bin/echo "Ensuring Tor starts when system boots up:"
 /usr/sbin/update-rc.d tor enable
 
 /bin/echo "Starting the Tor service:"
-/usr/sbin/service tor restart
+/usr/sbin/service tor start
 
 /usr/bin/clear
 /bin/echo "Done!"
