@@ -61,7 +61,7 @@ DirPort 9030
 ExitPolicy reject *:*
 
 # Nickname (You can search for this nickname on Atlas or Globe)
-Nickname torpi
+Nickname torbox
 
 # Bandwidth (Will allot this amount of bandwidth to your relay)
 RelayBandwidthRate 300 KB

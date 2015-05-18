@@ -49,6 +49,9 @@ SocksPort 0
 
 # Run Tor as Daemon (0 for no, 1 for yes)
 RunAsDaemon 1
+
+# Run Tor only as a client, not as a relay
+ClientOnly
 tor_config
 
 /bin/echo "Ensuring Tor starts when system boots up:"

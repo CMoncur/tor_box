@@ -18,7 +18,8 @@ We'll be breaking the setup into multiple parts. Everything in this tutorial wil
 - Setup and configuration of the Raspberry Pi
 - Setting up SSH and the Avahi daemon (used to easiliy connect to the Raspberry Pi via SSH)
 - Setting up the Raspberry Pi as a wireless access point
-- Installing and configuring Tor
+- Installing and configuring Tor as client only
+- Installing and configuring Tor as a client and relay
   
 ### Setup and Configuration
 To begin, start by connecting a keyboard, mouse, monitor, and ethernet-based internet connection to your Raspberry Pi. Then, plug your Raspberry Pi into a power source.  Allow the startup sequence to commence.  You should now see a login query.  By default, the username is "pi" and the password is "raspberry"
@@ -89,7 +90,7 @@ Instead of reinventing the wheel here, I'm going to redirect you to an easy-to-f
 
 Visit the tutorial [HERE](https://learn.adafruit.com/setting-up-a-raspberry-pi-as-a-wifi-access-point/).
 
-### Installing and Configuring Tor
+### Installing and Configuring Tor as Client Only
 Okay, from this point on, we'll need to be running all commands as root.  You're the boss, and you want your Raspberry Pi to know it!  Simply type in:
 ```
 pi@raspberrypi ~ $ sudo -i
@@ -102,22 +103,11 @@ Now, you can do all the typing to configure the IP tables and install Tor on you
 ```
 root@raspberrypi:~# curl -fsSL https://raw.githubusercontent.com/CMoncur/tor_box/master/installtor.sh | sudo sh
 ```
-Allow Tor to install entirely.  Now, there's one more thing to do before we call it a day.  We have to install Tor. Open up a Nano editor of the Tor configuration file by typing:
+Allow Tor to install entirely.  Now, there's one more thing to do before we call it a day.  We have to ensure Tor is configured to your liking. Now, you might decide that you don't actually want to change anything, and that's fine.  The configuration file as it is will appeal to a vast majority of users.  However, if you do want to change your configuration settings, open up a Nano editor of the Tor configuration file by typing:
 ```
 root@raspberrypi:~# nano /etc/tor/torrc
 ```
-Append the following settings to the bottom of the file:
-```
-Log notice file /var/log/tor/notices.log
-VirtualAddrNetwork 10.192.0.0/10
-AutomapHostsSuffixes .onion,.exit
-AutomapHostsOnResolve 1
-TransPort 9040
-TransListenAddress 192.168.42.1
-DNSPort 53
-DNSListenAddress 192.168.42.1
-```
-Hit ```Ctrl-X``` to exit Nano, and hit ```yes``` to save and write out the changes to the file. Now, let's restart the Tor service by typing:
+Make changes as you see fit, then hit ```Ctrl-X``` to exit Nano, and hit ```yes``` to save and write out the changes to the file. Now, let's restart the Tor service by typing:
 ```
 root@raspberrypi:~# service tor restart
 ```
@@ -128,8 +118,64 @@ You should see the following notifications:
 ```
 Tor is now configured!
 
+### Installing and Configuring Tor as a Client and Relay
+Similar to the client-only section, from this point on, we'll need to be running all commands as root.  Accomplish this by typing the following!
+```
+pi@raspberrypi ~ $ sudo -i
+```
+Now all the commands you type will be as a root user.  Your prompt should now look something like this:
+```
+root@raspberrypi:~#
+```
+You can most certainly install Tor, set up IP tables, and configure everything on your own, but running this shell script will accomplish all of that for you seamlessly.  The script can be found in this repository [here](https://github.com/CMoncur/tor_box/blob/master/installtorwithrelay.sh), titled ```installtorwithrelay.sh```.  To run the script, all you need to do is type in the following command:
+```
+root@raspberrypi:~# curl -fsSL https://raw.githubusercontent.com/CMoncur/tor_box/master/installtorwithrelay.sh | sudo sh
+```
+Allow Tor to install entirely.  Now, there's one more thing to do before we call it a day.  We have to ensure Tor is configured to your liking. Now, you might decide that you don't actually want to change anything, and that's fine.  The configuration file as it is will appeal to a vast majority of users.  However, if you do want to change your configuration settings, open up a Nano editor of the Tor configuration file by typing:
+```
+root@raspberrypi:~# nano /etc/tor/torrc
+```
+
+One point of interest in this configuration file is the ```RelayBandwidthRate``` and ```RelayBandwidthBurst```.  By default, they're set to 300 KB/s and 600 KB/s respectively.  This shouldn't be enough to cause a noticeable drop in performance for most major ISPs, even if your bandwidth is throttled to a very low rate.  But feel free to adjust these as you see fit.
+
+Next, locate ```Nickname torbox``` within the configuration file and change it to whatever name you like.  You can also keep ```torbox``` as a name if you really want to!
+
+Make changes as you see fit, then hit ```Ctrl-X``` to exit Nano, and hit ```yes``` to save and write out the changes to the file. Now, let's restart the Tor service by typing:
+```
+root@raspberrypi:~# service tor restart
+```
+You should see the following notifications:
+```
+[ ok ] Stopping tor daemon...done.
+[ ok ] Starting tor daemon...done.
+```
+
+Now, since this configuration file has the DirPort and ORPort set to 9030 and 9001 respectively, you'll need to make sure those ports are forwarded to your Raspberry Pi.
+
+Tor is now configured!
+
+### Monitoring your relay
+Since we now have a configured Tor relay, we want to make sure that it's up and running.  To do this, we'll follow that log file we made when installing Tor!  Simply type the following command:
+
+```root@raspberrypi:~# tail -f /var/log/tor/notices.log```
+
+The ```tail``` command will simply track a file in real time, and display any new contents placed within it.  This is useful for us because we can monitor our relays in real time.  If your relay is set up correctly, you should see messages similar to the following:
+
+```
+May 18 00:00:56.000 [notice] Tor has successfully opened a circuit. Looks like client functionality is working.
+May 18 00:00:56.000 [notice] Bootstrapped 100%: Done.
+May 18 00:00:56.000 [notice] Now checking whether ORPort 24.20.108.252:9001 and DirPort 24.20.108.252:9030 are reachable... (this may take up to 20 minutes -- look for log messages indicating success)
+May 18 00:00:57.000 [notice] Self-testing indicates your DirPort is reachable from the outside. Excellent.
+May 18 00:00:58.000 [notice] Self-testing indicates your ORPort is reachable from the outside. Excellent. Publishing server descriptor.
+May 18 00:01:52.000 [notice] Performing bandwidth self-test...done.
+```
+
+If you're getting something different regarding the DirPort or ORPort, chances are your ports are not forwarded properly.  Try forwarding ports 9030 and 9001 to your Raspberry Pi.
+
+Otherwise, it looks like you're all set!  To verify, head over to [Globe](https://globe.torproject.org), and try typing in the nickname you gave to your relay into the search bar.  If you didn't rename your nickname in the configuration file, it has defaulted to ```torbox```.  You might see your relay in the search results right away, but don't be concerned if it doesn't show up immediately.  Sometimes it can take up to six hours for the relays to be published to Globe or Atlas.
+
 ### Wrapping it all up
-You should now have a fully functioning wireless Tor access point!  Congratulations!  Try connecting to it from your desktop or laptop. The wireless network should be named whatever name you gave it while setting up your wireless access point.  Mine is named tor_box.
+You should now have a fully functioning wireless Tor access point and relay!  Congratulations!  Try connecting to it from your desktop or laptop. The wireless network should be named whatever name you gave it while setting up your wireless access point.  Mine is named tor_box.
 
 Once connected, the VERY FIRST thing you need to do is visit ```https://check.torproject.org/``` to ensure your Tor access point is up and running correctly.  You should see a congratulations message, followed by your IP alias.
 
