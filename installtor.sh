@@ -3,9 +3,9 @@
 #Must be ran as ROOT 
 
 /bin/echo "Updating system and installing Tor:"
-/usr/bin/apt-get update
-/usr/bin/apt-get upgrade
-/usr/bin/apt-get install tor 
+/usr/bin/apt-get -y update
+/usr/bin/apt-get -y upgrade
+/usr/bin/apt-get -y install tor 
 
 /bin/echo "Firewall settings:"
 /sbin/iptables -t nat -A PREROUTING -i wlan0 -p tcp --dport 22 -j REDIRECT --to-ports 22
