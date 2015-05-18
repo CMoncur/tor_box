@@ -164,7 +164,7 @@ The ```tail``` command will simply track a file in real time, and display any ne
 ```
 May 18 00:00:56.000 [notice] Tor has successfully opened a circuit. Looks like client functionality is working.
 May 18 00:00:56.000 [notice] Bootstrapped 100%: Done.
-May 18 00:00:56.000 [notice] Now checking whether ORPort 24.20.108.252:9001 and DirPort 24.20.108.252:9030 are reachable... (this may take up to 20 minutes -- look for log messages indicating success)
+May 18 00:00:56.000 [notice] Now checking whether ORPort 11.22.113.114:9001 and DirPort 11.22.113.114:9030 are reachable... (this may take up to 20 minutes -- look for log messages indicating success)
 May 18 00:00:57.000 [notice] Self-testing indicates your DirPort is reachable from the outside. Excellent.
 May 18 00:00:58.000 [notice] Self-testing indicates your ORPort is reachable from the outside. Excellent. Publishing server descriptor.
 May 18 00:01:52.000 [notice] Performing bandwidth self-test...done.
