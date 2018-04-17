@@ -69,7 +69,7 @@ The Avahi Daemon is a way to connect to your Raspberry Pi via SSH without even h
 ```
 pi@raspberrypi ~ $ sudo apt-get install avahi-daemon
 ```
-It should download and install in a matter of seconds. Next, well run the following command to ensure the daemon is running when the Raspberry Pi starts up:
+It should download and install in a matter of seconds. Next, we'll run the following command to ensure the daemon is running when the Raspberry Pi starts up:
 ```
 pi@raspberrypi ~ $ sudo update-rc.d avahi-daemon defaults
 ```
